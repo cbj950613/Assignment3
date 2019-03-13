@@ -61,23 +61,22 @@ public:
         }
         
         iterator& operator++(){
-            // Replace the line(s) below with your code.
+            ++offset;
             return *this;
         }
         
         iterator operator++( int unused ){
-            // Replace the line(s) below with your code.
-            return *this;
+            iterator<Itemtype,MAX_SIZE> iter(*this);
+            ++offset;
+            return iter;
         }
         
         bool operator==( const iterator& rhs ) const {
-            // Replace the line(s) below with your code.
-            return true;
+            return this==rhs;
         }
         
         bool operator!=( const iterator& rhs ) const {
-            // Replace the line(s) below with your code.
-            return true;
+            return this!=rhs;
         }
         
     }; // end of iterator class
@@ -127,7 +126,7 @@ private:
     // A helper function that computes the index of 'the end' of the RingQueue
     int end_index() const {
         // Replace the line(s) below with your code.
-        return begin_index;
+        return this->ring_size-1;
     }
     
     
@@ -154,7 +153,7 @@ public:
         
         
         // Replace the line(s) below with your code.
-        return buffer[0];
+        return buffer[this->ring_size-1];
     }
     
     
@@ -171,20 +170,17 @@ public:
     
     // Functions that return iterators
     iterator begin() {
-        // Replace the line(s) below with your code.
-        return iterator(this,0);
+        return iterator(*this,0);
     }
     
     iterator end() {
-        // Replace the line(s) below with your code.
-        return iterator(this,0);
+        return iterator(*this,ring_size);
     }
     
     
     // Miscellaneous functions
     size_t size() const {
-        // Replace the line(s) below with your code.
-        return 0;
+        return this->ring_size;
     }
     
     // Debugging functions
