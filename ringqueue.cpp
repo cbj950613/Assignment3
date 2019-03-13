@@ -35,6 +35,7 @@ public:
     
 public:
     // Definition of RingQueue<ItemType,MAX_SIZE>::iterator
+    
     class iterator{
     private:
         // A link to the parent container
@@ -66,7 +67,7 @@ public:
         }
         
         iterator operator++( int unused ){
-            iterator<Itemtype,MAX_SIZE> iter(*this);
+            iterator iter(this->parent,this->offset);
             ++offset;
             return iter;
         }
@@ -140,30 +141,29 @@ public:
         if ( ring_size == 0 ) std::cerr<< "Warning: Empty ring!\n" ;
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         // Feel free to throw instead...
-        
-        
         // Replace the line(s) below with your code.
-        return buffer[0];
+        return buffer[begin_index];
     }
     
     ItemType back() const {
         if ( ring_size == 0 ) std::cerr<< "Warning: Empty ring!\n" ;
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         // Feel free to throw instead...
-        
-        
         // Replace the line(s) below with your code.
-        return buffer[this->ring_size-1];
+        return buffer[end_index];
     }
     
     
     
     // Mutators
     void push_back( const ItemType& value ){
+        buffer[end_index] = value;
         return;
     }
     
     void pop_front(){
+        begin_index++;
+        ring_size--;
         return;
     }
     
