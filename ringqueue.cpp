@@ -57,8 +57,7 @@ public:
         
     public:
         reference operator*() {
-            // Replace the line(s) below with your code.
-            return parent->buffer[0] ;
+            return parent->buffer[(parent->begin_index+offset)%MAX_SIZE] ;
         }
         
         iterator& operator++(){
@@ -67,17 +66,17 @@ public:
         }
         
         iterator operator++( int unused ){
-            iterator iter(this->parent,this->offset);
+            iterator iter(parent,offset);
             ++offset;
             return iter;
         }
         
         bool operator==( const iterator& rhs ) const {
-            return this==rhs;
+            return parent==rhs.parent && offset==rhs.offset;
         }
         
         bool operator!=( const iterator& rhs ) const {
-            return this!=rhs;
+            return parent!=rhs.parent || offset!=rhs.offset;
         }
         
     }; // end of iterator class
@@ -127,7 +126,7 @@ private:
     // A helper function that computes the index of 'the end' of the RingQueue
     int end_index() const {
         // Replace the line(s) below with your code.
-        return this->ring_size-1;
+        return (begin_index + ring_size) % MAX_SIZE;
     }
     
     
@@ -150,19 +149,28 @@ public:
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         // Feel free to throw instead...
         // Replace the line(s) below with your code.
-        return buffer[end_index];
+        return buffer[this->end_index()-1];
     }
     
     
     
     // Mutators
     void push_back( const ItemType& value ){
-        buffer[end_index] = value;
+        buffer[this->end_index()] = value;
+        ring_size++;
+        if(ring_size>MAX_SIZE){
+            ring_size = MAX_SIZE;
+            begin_index++;
+        }
         return;
     }
     
     void pop_front(){
+        if(begin_index>=MAX_SIZE-1)
+            begin_index = 0;
         begin_index++;
+        if(ring_size == 0)
+            return;
         ring_size--;
         return;
     }
@@ -170,11 +178,11 @@ public:
     
     // Functions that return iterators
     iterator begin() {
-        return iterator(*this,0);
+        return iterator(this);
     }
     
     iterator end() {
-        return iterator(*this,ring_size);
+        return iterator(this,ring_size);
     }
     
     
@@ -222,13 +230,12 @@ int main(){
     // Uncomment the block below only when you have a working implementation of
     // RingQueue<ItemType,int>::end().  If the implementation is not correct, it
     // might result in an infinite loop.
-    /**
+    
      std::cout << "Queue via iterators:\n";
      for ( auto it = rq.begin() ; it != rq.end() ; ++it ) {
      std::cout << "Value: " << *it << ", address: " << &(*it) << '\n';
      }
      std::cout << '\n';
-     */
     
     
     
